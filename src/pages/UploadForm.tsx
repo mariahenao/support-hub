@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { supabase } from "@/lib/supabase";
+import { uploadToGoogleDrive } from "@/lib/googleDrive";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,16 +53,12 @@ const UploadForm = () => {
     setSuccess(false);
 
     try {
-      const filePath = `${Date.now()}_${file.name}`;
-      const { error: uploadError } = await supabase.storage.from("uploads").upload(filePath, file);
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage.from("uploads").getPublicUrl(filePath);
+      const fileUrl = await uploadToGoogleDrive(file);
 
       const { error: insertError } = await supabase.from("submissions").insert({
         username: username.trim(),
         user_id: userId.trim(),
-        file_url: publicUrl,
+        file_url: fileUrl,
         status: "pending",
       });
       if (insertError) throw insertError;
