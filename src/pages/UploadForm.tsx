@@ -22,11 +22,11 @@ const UploadForm = () => {
   const validateFile = (f: File) => {
     const ext = f.name.substring(f.name.lastIndexOf(".")).toLowerCase();
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      toast({ title: "Invalid file type", description: "Only .dat, .zip, and .bak files are allowed.", variant: "destructive" });
+      toast({ title: "Tipo de archivo no válido", description: "Solo se permiten archivos .dat, .zip y .bak.", variant: "destructive" });
       return false;
     }
     if (f.size === 0) {
-      toast({ title: "Empty file", description: "The file cannot be empty.", variant: "destructive" });
+      toast({ title: "Archivo vacío", description: "El archivo no puede estar vacío.", variant: "destructive" });
       return false;
     }
     return true;
@@ -45,7 +45,7 @@ const UploadForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim() || !userId.trim() || !file) {
-      toast({ title: "Missing fields", description: "All fields are required.", variant: "destructive" });
+      toast({ title: "Campos incompletos", description: "Todos los campos son obligatorios.", variant: "destructive" });
       return;
     }
 
@@ -68,9 +68,9 @@ const UploadForm = () => {
       setUserId("");
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
-      toast({ title: "Success", description: "Your file has been uploaded successfully." });
+      toast({ title: "Enviado", description: "Tu archivo ha sido subido exitosamente." });
     } catch (err: any) {
-      toast({ title: "Upload failed", description: err.message || "Something went wrong.", variant: "destructive" });
+      toast({ title: "Error al subir", description: err.message || "Algo salió mal.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -81,30 +81,30 @@ const UploadForm = () => {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-primary">POS Service Desk</CardTitle>
-          <CardDescription>Upload your support file for technical review</CardDescription>
+          <CardDescription>Sube tu archivo de soporte para revisión técnica</CardDescription>
         </CardHeader>
         <CardContent>
           {success && (
             <div className="mb-4 flex items-center gap-2 rounded-md bg-[hsl(var(--success)/0.1)] p-3 text-sm text-[hsl(var(--success))]">
-              <CheckCircle className="h-4 w-4" /> Submission received. We'll review it shortly.
+              <CheckCircle className="h-4 w-4" /> Solicitud recibida. La revisaremos pronto.
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input id="username" placeholder="Enter your username" value={username} onChange={(e) => setUsername(e.target.value)} disabled={loading} />
+              <Label htmlFor="username">Usuario</Label>
+              <Input id="username" placeholder="Ingresa tu usuario" value={username} onChange={(e) => setUsername(e.target.value)} disabled={loading} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="userId">User ID</Label>
-              <Input id="userId" placeholder="Enter your user ID" value={userId} onChange={(e) => setUserId(e.target.value)} disabled={loading} />
+              <Label htmlFor="userId">ID de usuario</Label>
+              <Input id="userId" placeholder="Ingresa tu ID de usuario" value={userId} onChange={(e) => setUserId(e.target.value)} disabled={loading} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="file">Support File</Label>
+              <Label htmlFor="file">Archivo de soporte</Label>
               <Input id="file" type="file" ref={fileInputRef} accept=".dat,.zip,.bak" onChange={handleFileChange} disabled={loading} className="cursor-pointer" />
-              <p className="text-xs text-muted-foreground">Accepted formats: .dat, .zip, .bak</p>
+              <p className="text-xs text-muted-foreground">Formatos aceptados: .dat, .zip, .bak</p>
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Uploading...</> : <><Upload className="mr-2 h-4 w-4" /> Submit</>}
+              {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Subiendo...</> : <><Upload className="mr-2 h-4 w-4" /> Enviar</>}
             </Button>
           </form>
         </CardContent>

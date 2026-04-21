@@ -9,7 +9,7 @@ const Index = () => {
       <div className="absolute right-4 top-4">
         <Link to="/dashboard">
           <Button variant="outline" size="sm">
-            <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+            <LayoutDashboard className="mr-2 h-4 w-4" /> Panel
           </Button>
         </Link>
       </div>

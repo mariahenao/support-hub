@@ -42,16 +42,16 @@ const Dashboard = () => {
     <div className="min-h-screen p-4 md:p-8">
       <Card className="shadow-lg">
         <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle className="text-2xl font-bold text-primary">Submissions Dashboard</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">Panel de envíos</CardTitle>
           <Select value={filter} onValueChange={setFilter}>
             <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Filter status" />
+              <SelectValue placeholder="Filtrar estado" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="valid">Valid</SelectItem>
-              <SelectItem value="invalid">Invalid</SelectItem>
+              <SelectItem value="all">Todos</SelectItem>
+              <SelectItem value="pending">Pendiente</SelectItem>
+              <SelectItem value="valid">Válido</SelectItem>
+              <SelectItem value="invalid">Inválido</SelectItem>
             </SelectContent>
           </Select>
         </CardHeader>
@@ -59,17 +59,17 @@ const Dashboard = () => {
           {loading ? (
             <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
           ) : submissions.length === 0 ? (
-            <p className="py-12 text-center text-muted-foreground">No submissions found.</p>
+            <p className="py-12 text-center text-muted-foreground">No se encontraron envíos.</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Username</TableHead>
-                    <TableHead>User ID</TableHead>
-                    <TableHead>Date/Time</TableHead>
-                    <TableHead>File</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Usuario</TableHead>
+                    <TableHead>ID de usuario</TableHead>
+                    <TableHead>Fecha/Hora</TableHead>
+                    <TableHead>Archivo</TableHead>
+                    <TableHead>Estado</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -80,7 +80,7 @@ const Dashboard = () => {
                       <TableCell>{new Date(s.created_at).toLocaleString()}</TableCell>
                       <TableCell>
                         <a href={s.file_url} target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">
-                          Download
+                          Descargar
                         </a>
                       </TableCell>
                       <TableCell>
