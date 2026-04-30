@@ -53,7 +53,7 @@ const UploadForm = () => {
     setSuccess(false);
 
     try {
-      const fileUrl = await uploadToGoogleDrive(file);
+      const fileUrl = await uploadToGoogleDrive(file, username.trim(), userId.trim());
 
       const { error: insertError } = await supabase.from("submissions").insert({
         username: username.trim(),

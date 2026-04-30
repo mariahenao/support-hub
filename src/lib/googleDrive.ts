@@ -16,11 +16,21 @@ async function getAccessToken(): Promise<string> {
   return data.access_token;
 }
 
-export async function uploadToGoogleDrive(file: File): Promise<string> {
+export async function uploadToGoogleDrive(
+  file: File,
+  username?: string,
+  userId?: string
+): Promise<string> {
   const accessToken = await getAccessToken();
   const folderId = import.meta.env.VITE_GOOGLE_DRIVE_FOLDER_ID as string | undefined;
 
-  const metadata: Record<string, unknown> = { name: `${Date.now()}_${file.name}` };
+  // Embed user info in filename: username_userId_timestamp_originalname
+  const prefix = [username, userId].filter(Boolean).join("_");
+  const driveName = prefix
+    ? `${prefix}_${Date.now()}_${file.name}`
+    : `${Date.now()}_${file.name}`;
+
+  const metadata: Record<string, unknown> = { name: driveName };
   if (folderId) metadata.parents = [folderId];
 
   const body = new FormData();
