@@ -53,35 +53,26 @@ const UploadForm = () => {
     setSuccess(false);
 
     try {
-      // 1. Insert first to get the unique submission ID
-      const { data: insertData, error: insertError } = await supabase
-        .from("submissions")
-        .insert({
-          username: username.trim(),
-          user_id: userId.trim(),
-          file_url: "",
-          status: "pending",
-        })
-        .select("id")
-        .single();
-      console.log("insert result:", insertData, "error:", insertError);
-      if (insertError) throw insertError;
-
-      const submissionId = insertData.id;
-      console.log("submissionId:", submissionId);
+      // 1. Generate submission ID client-side
+      const submissionId = crypto.randomUUID();
 
       // 2. Upload to Drive using the submission ID in the filename
       const fileUrl = await uploadToGoogleDrive(file, submissionId);
       console.log("fileUrl:", fileUrl);
 
-      // 3. Update the record with the actual file URL
-      const { error: updateError, data: updateData } = await supabase
+      // 3. Insert with all data in one shot — no update needed
+      const { error: insertError } = await supabase
         .from("submissions")
-        .update({ file_url: fileUrl })
-        .eq("id", submissionId)
-        .select();
-      console.log("update result:", updateData, "error:", updateError);
-      if (updateError) throw updateError;
+        .insert({
+          id: submissionId,
+          username: username.trim(),
+          user_id: userId.trim(),
+          file_url: fileUrl,
+          status: "pending",
+        });
+      console.log("insert error:", insertError);
+      if (insertError) throw insertError;
+
 
       setSuccess(true);
       setUsername("");
