@@ -64,18 +64,23 @@ const UploadForm = () => {
         })
         .select("id")
         .single();
+      console.log("insert result:", insertData, "error:", insertError);
       if (insertError) throw insertError;
 
       const submissionId = insertData.id;
+      console.log("submissionId:", submissionId);
 
       // 2. Upload to Drive using the submission ID in the filename
       const fileUrl = await uploadToGoogleDrive(file, submissionId);
+      console.log("fileUrl:", fileUrl);
 
       // 3. Update the record with the actual file URL
-      const { error: updateError } = await supabase
+      const { error: updateError, data: updateData } = await supabase
         .from("submissions")
         .update({ file_url: fileUrl })
-        .eq("id", submissionId);
+        .eq("id", submissionId)
+        .select();
+      console.log("update result:", updateData, "error:", updateError);
       if (updateError) throw updateError;
 
       setSuccess(true);
@@ -107,12 +112,12 @@ const UploadForm = () => {
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Usuario</Label>
-              <Input id="username" placeholder="Ingresa tu usuario" value={username} onChange={(e) => setUsername(e.target.value)} disabled={loading} />
+              <Label htmlFor="username">Nombre de la tienda</Label>
+              <Input id="username" placeholder="Ingresa el nombre de la tienda" value={username} onChange={(e) => setUsername(e.target.value)} disabled={loading} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="userId">ID de usuario</Label>
-              <Input id="userId" placeholder="Ingresa tu ID de usuario" value={userId} onChange={(e) => setUserId(e.target.value)} disabled={loading} />
+              <Label htmlFor="userId">Id de la tienda</Label>
+              <Input id="userId" placeholder="Ingresa el Id de la tienda" value={userId} onChange={(e) => setUserId(e.target.value)} disabled={loading} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="file">Archivo de soporte</Label>

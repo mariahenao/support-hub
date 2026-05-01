@@ -122,8 +122,8 @@ const Dashboard = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Usuario</TableHead>
-                    <TableHead>ID de usuario</TableHead>
+                    <TableHead>Nombre de la tienda</TableHead>
+                    <TableHead>Id de la tienda</TableHead>
                     <TableHead>Fecha/Hora</TableHead>
                     <TableHead>Archivo</TableHead>
                     <TableHead>Estado</TableHead>
@@ -178,7 +178,7 @@ const Dashboard = () => {
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              Diagnóstico — {diagSubmission?.username} ({diagSubmission?.user_id})
+              Diagnóstico — {diagSubmission?.username} (Id: {diagSubmission?.user_id})
             </DialogTitle>
           </DialogHeader>
           {diagLoading ? (
