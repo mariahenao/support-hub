@@ -53,15 +53,30 @@ const UploadForm = () => {
     setSuccess(false);
 
     try {
-      const fileUrl = await uploadToGoogleDrive(file, username.trim(), userId.trim());
-
-      const { error: insertError } = await supabase.from("submissions").insert({
-        username: username.trim(),
-        user_id: userId.trim(),
-        file_url: fileUrl,
-        status: "pending",
-      });
+      // 1. Insert first to get the unique submission ID
+      const { data: insertData, error: insertError } = await supabase
+        .from("submissions")
+        .insert({
+          username: username.trim(),
+          user_id: userId.trim(),
+          file_url: "",
+          status: "pending",
+        })
+        .select("id")
+        .single();
       if (insertError) throw insertError;
+
+      const submissionId = insertData.id;
+
+      // 2. Upload to Drive using the submission ID in the filename
+      const fileUrl = await uploadToGoogleDrive(file, submissionId);
+
+      // 3. Update the record with the actual file URL
+      const { error: updateError } = await supabase
+        .from("submissions")
+        .update({ file_url: fileUrl })
+        .eq("id", submissionId);
+      if (updateError) throw updateError;
 
       setSuccess(true);
       setUsername("");
@@ -69,8 +84,9 @@ const UploadForm = () => {
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
       toast({ title: "Enviado", description: "Tu archivo ha sido subido exitosamente." });
-    } catch (err: any) {
-      toast({ title: "Error al subir", description: err.message || "Algo salió mal.", variant: "destructive" });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Algo salió mal.";
+      toast({ title: "Error al subir", description: message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
