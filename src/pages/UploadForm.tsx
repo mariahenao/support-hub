@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { Upload, Loader2, CheckCircle } from "lucide-react";
 
-const ALLOWED_EXTENSIONS = [".dat", ".zip", ".bak"];
+const ALLOWED_EXTENSIONS = [".dat"];
 
 const UploadForm = () => {
   const [username, setUsername] = useState("");
@@ -22,7 +22,7 @@ const UploadForm = () => {
   const validateFile = (f: File) => {
     const ext = f.name.substring(f.name.lastIndexOf(".")).toLowerCase();
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      toast({ title: "Tipo de archivo no válido", description: "Solo se permiten archivos .dat, .zip y .bak.", variant: "destructive" });
+      toast({ title: "Tipo de archivo no válido", description: "Solo se permiten archivos .dat.", variant: "destructive" });
       return false;
     }
     if (f.size === 0) {
@@ -112,7 +112,7 @@ const UploadForm = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="file">Archivo de soporte</Label>
-              <Input id="file" type="file" ref={fileInputRef} accept=".dat,.zip,.bak" onChange={handleFileChange} disabled={loading} className="cursor-pointer" />
+              <Input id="file" type="file" ref={fileInputRef} accept=".dat" onChange={handleFileChange} disabled={loading} className="cursor-pointer" />
               <p className="text-xs text-muted-foreground">Formatos aceptados: .dat, .zip, .bak</p>
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
