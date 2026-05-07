@@ -113,7 +113,7 @@ const UploadForm = () => {
             <div className="space-y-2">
               <Label htmlFor="file">Archivo de soporte</Label>
               <Input id="file" type="file" ref={fileInputRef} accept=".dat" onChange={handleFileChange} disabled={loading} className="cursor-pointer" />
-              <p className="text-xs text-muted-foreground">Formatos aceptados: .dat, .zip, .bak</p>
+              <p className="text-xs text-muted-foreground">Formatos aceptados: .dat</p>
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Subiendo...</> : <><Upload className="mr-2 h-4 w-4" /> Enviar</>}

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -42,7 +41,6 @@ const Dashboard = () => {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [diagnosticoSubmissionIds, setDiagnosticoSubmissionIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
 
   // Diagnostico dialog state
   const [diagOpen, setDiagOpen] = useState(false);
@@ -55,10 +53,11 @@ const Dashboard = () => {
       setLoading(true);
 
       // Fetch submissions — don't filter "processed" in DB, it's computed client-side
-      let query = supabase.from("submissions").select("*").order("created_at", { ascending: false });
-      if (filter !== "all" && filter !== "processed") query = query.eq("status", filter);
-      const { data: submissionsData, error: submissionsError } = await query;
-      if (!submissionsError && submissionsData) setSubmissions(submissionsData);
+      const { data: submissionsData, error: submissionsError } = await supabase
+        .from("submissions")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (!submissionsError && submissionsData) setSubmissions(submissionsData as Submission[]);
 
       // Fetch diagnostico submission IDs
       const { data: diagData, error: diagError } = await supabase
@@ -77,7 +76,7 @@ const Dashboard = () => {
       setLoading(false);
     };
     fetchData();
-  }, [filter]);
+  }, []);
 
   const handleViewDiagnostico = async (submission: Submission) => {
     setDiagSubmission(submission);
@@ -98,19 +97,7 @@ const Dashboard = () => {
     <div className="min-h-screen p-4 md:p-8">
       <Card className="shadow-lg">
         <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle className="text-2xl font-bold text-primary">Panel de envíos</CardTitle>
-          <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Filtrar estado" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="pending">Pendiente</SelectItem>
-              <SelectItem value="valid">Válido</SelectItem>
-              <SelectItem value="invalid">Inválido</SelectItem>
-              <SelectItem value="processed">Procesado</SelectItem>
-            </SelectContent>
-          </Select>
+          <CardTitle className="text-2xl font-bold text-primary">PANEL DE ENVÍOS</CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -132,10 +119,6 @@ const Dashboard = () => {
                 </TableHeader>
                 <TableBody>
                   {submissions
-                    .filter((s) => {
-                      if (filter !== "processed") return true;
-                      return diagnosticoSubmissionIds.has(s.id);
-                    })
                     .map((s) => {
                       const effectiveStatus = getEffectiveStatus(s, diagnosticoSubmissionIds);
                       const hasResults = diagnosticoSubmissionIds.has(s.id);
